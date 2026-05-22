@@ -38,7 +38,8 @@ const InstaFeed = ({ settings = defaultSettings }) => {
         ))}
       </div>
 
-      <a className="instagram-button" href="#instagram">
+      <a className="instagram-button" target="_blank"
+        rel="noopener noreferrer" href="https://www.instagram.com/yanglam_officiel/">
         <FaInstagram aria-hidden="true" />
         {sectionSettings.buttonText}
       </a>

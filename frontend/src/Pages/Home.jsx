@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import Hero from '../Components/Hero'
+import WhatsAppFloat from '../Components/WhatsAppFloat'
 import '../Css/Home.css'
 import { API_BASE_URL } from '../apiConfig'
 import { resolveStoredImageUrl } from '../imageUrl'
@@ -244,6 +245,7 @@ const Home = () => {
           </LazyHomeSection>
         )}
       </div>
+      <WhatsAppFloat />
     </div>
   )
 }

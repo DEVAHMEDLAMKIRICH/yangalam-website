@@ -478,6 +478,22 @@ const OrdersTable = () => {
     setNewOrdersCount(0)
   }
 
+  const renderStatusSelect = (order) => (
+    <select
+      className={`admin-status-select admin-status-select--${getStatusSlug(order.statut)}`}
+      value={order.statut}
+      onChange={(event) => updateOrderStatus(order._id, event.target.value)}
+      disabled={updatingOrderId === order._id}
+      aria-label={`Changer le statut de ${order._id}`}
+    >
+      {statusOptions.map((option) => (
+        <option value={option.value} key={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
+
   return (
     <section className="admin-orders">
       <div className="admin-stats-grid">
@@ -590,41 +606,27 @@ const OrdersTable = () => {
                 <tbody>
                   {paginatedOrders.map((order) => (
                     <tr key={order._id}>
-                      <td>
+                      <td data-label="Nom">
                         <div className="admin-order-name">
                           <strong>{order.nom}</strong>
                           {isNewOrder(order.createdAt) && (
-                            <span className="admin-new-order-badge">Nouveau ✨</span>
+                            <span className="admin-new-order-badge">Nouveau</span>
                           )}
                         </div>
                         <span className="admin-order-id">{order._id}</span>
                       </td>
-                      <td>{order.telephone}</td>
-                      <td>{order.ville}</td>
-                      <td className="admin-address-cell" title={order.adresse}>
+                      <td data-label="Telephone">{order.telephone}</td>
+                      <td data-label="Ville">{order.ville}</td>
+                      <td className="admin-address-cell" data-label="Adresse" title={order.adresse}>
                         <span>{order.adresse}</span>
                       </td>
-                      <td>{getOrderProduct(order)}</td>
-                      <td>
+                      <td data-label="Produit">{getOrderProduct(order)}</td>
+                      <td data-label="Date">
                         <span className="admin-order-date">{formatOrderDate(order.createdAt)}</span>
                       </td>
-                      <td>
+                      <td data-label="Statut">
                         <div className="admin-status-cell">
-                          <select
-                            className={`admin-status-select admin-status-select--${getStatusSlug(
-                              order.statut,
-                            )}`}
-                            value={order.statut}
-                            onChange={(event) => updateOrderStatus(order._id, event.target.value)}
-                            disabled={updatingOrderId === order._id}
-                            aria-label={`Changer le statut de ${order._id}`}
-                          >
-                            {statusOptions.map((option) => (
-                              <option value={option.value} key={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
+                          {renderStatusSelect(order)}
 
                           {isDelayedPendingOrder(order) && (
                             <span className="admin-delay-alert">
@@ -633,7 +635,7 @@ const OrdersTable = () => {
                           )}
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Action">
                         <div className="admin-row-actions">
                           <button type="button" onClick={() => openOrderDetails(order)}>
                             <FiEye aria-hidden="true" />
@@ -658,6 +660,84 @@ const OrdersTable = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="admin-orders-mobile-list" aria-label="Commandes mobiles">
+              {paginatedOrders.map((order) => (
+                <article className="admin-order-mobile-card" key={`mobile-${order._id}`}>
+                  <header className="admin-order-mobile-card__header">
+                    <div>
+                      <div className="admin-order-mobile-card__name">
+                        <strong>{order.nom}</strong>
+                        {isNewOrder(order.createdAt) && (
+                          <span className="admin-new-order-badge">Nouveau</span>
+                        )}
+                      </div>
+                      <span className="admin-order-id">{order._id}</span>
+                    </div>
+
+                    <span
+                      className={`admin-order-mobile-card__badge admin-order-mobile-card__badge--${getStatusSlug(
+                        order.statut,
+                      )}`}
+                    >
+                      {order.statut}
+                    </span>
+                  </header>
+
+                  <div className="admin-order-mobile-card__meta">
+                    <article>
+                      <span>Telephone</span>
+                      <strong>{order.telephone}</strong>
+                    </article>
+                    <article>
+                      <span>Ville</span>
+                      <strong>{order.ville}</strong>
+                    </article>
+                    <article>
+                      <span>Produit</span>
+                      <strong>{getOrderProduct(order)}</strong>
+                    </article>
+                    <article>
+                      <span>Date</span>
+                      <strong>{formatOrderDate(order.createdAt)}</strong>
+                    </article>
+                  </div>
+
+                  <div className="admin-order-mobile-card__address">
+                    <span>Adresse</span>
+                    <p>{order.adresse}</p>
+                  </div>
+
+                  <div className="admin-order-mobile-card__status-control">
+                    <span>Changer le statut</span>
+                    {renderStatusSelect(order)}
+                    {isDelayedPendingOrder(order) && (
+                      <small className="admin-delay-alert">A contacter urgemment</small>
+                    )}
+                  </div>
+
+                  <div className="admin-order-mobile-card__actions">
+                    <button type="button" onClick={() => openOrderDetails(order)}>
+                      <FiEye aria-hidden="true" />
+                      Voir
+                    </button>
+                    <button type="button" onClick={() => openEditOrder(order)}>
+                      <FiEdit3 aria-hidden="true" />
+                      Modifier
+                    </button>
+                    <button
+                      className="is-danger"
+                      type="button"
+                      onClick={() => deleteOrder(order)}
+                      disabled={deletingOrderId === order._id}
+                    >
+                      <FiTrash2 aria-hidden="true" />
+                      {deletingOrderId === order._id ? '...' : 'Supprimer'}
+                    </button>
+                  </div>
+                </article>
+              ))}
             </div>
 
             {!paginatedOrders.length && (

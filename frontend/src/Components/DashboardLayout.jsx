@@ -6,6 +6,7 @@ import '../Css/Dashboard.css'
 import AdminLogin from './AdminLogin'
 import OrdersTable from './OrdersTable'
 import PageSettings from './PageSettings'
+import WhatsAppFloat from './WhatsAppFloat'
 
 const navigationItems = [
   {
@@ -146,19 +147,25 @@ const DashboardLayout = () => {
 
   if (authStatus === 'checking') {
     return (
-      <main className="admin-login-page">
-        <div className="admin-state-message">Verification de la session admin...</div>
-      </main>
+      <>
+        <main className="admin-login-page">
+          <div className="admin-state-message">Verification de la session admin...</div>
+        </main>
+        <WhatsAppFloat variant="dashboard" />
+      </>
     )
   }
 
   if (authStatus !== 'authenticated') {
     return (
-      <AdminLogin
-        error={authError}
-        isLoading={authStatus === 'logging-in'}
-        onLogin={loginAdmin}
-      />
+      <>
+        <AdminLogin
+          error={authError}
+          isLoading={authStatus === 'logging-in'}
+          onLogin={loginAdmin}
+        />
+        <WhatsAppFloat variant="dashboard" />
+      </>
     )
   }
 
@@ -200,6 +207,7 @@ const DashboardLayout = () => {
 
         {activeView === 'orders' ? <OrdersTable /> : <PageSettings />}
       </main>
+      <WhatsAppFloat variant="dashboard" />
     </div>
   )
 }

@@ -72,6 +72,20 @@ app.use(errorHandler)
 
 initSocket(server, corsOptions)
 
+const handleServerError = (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(
+      `Port ${PORT} est deja utilise. Fermez l'ancien serveur Node ou changez PORT dans .env.`,
+    )
+    process.exit(1)
+  }
+
+  console.error('Erreur serveur:', error.message)
+  process.exit(1)
+}
+
+server.on('error', handleServerError)
+
 const startServer = async () => {
   try {
     if (!process.env.MONGO_URI) {

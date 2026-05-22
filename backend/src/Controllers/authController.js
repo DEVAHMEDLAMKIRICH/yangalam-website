@@ -47,7 +47,7 @@ const loginAdmin = async (req, res, next) => {
       },
     )
 
-    res.cookie(ADMIN_COOKIE_NAME, token, getAdminCookieOptions())
+    res.cookie(ADMIN_COOKIE_NAME, token, getAdminCookieOptions(req))
 
     return res.status(200).json({
       authenticated: true,
@@ -70,7 +70,7 @@ const getCurrentAdmin = (req, res) => {
 }
 
 const logoutAdmin = (req, res) => {
-  res.clearCookie(ADMIN_COOKIE_NAME, getClearAdminCookieOptions())
+  res.clearCookie(ADMIN_COOKIE_NAME, getClearAdminCookieOptions(req))
 
   return res.status(200).json({
     authenticated: false,
